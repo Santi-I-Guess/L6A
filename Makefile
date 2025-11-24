@@ -16,13 +16,13 @@ CPPVERSION = -std=c++17
 
 ARCHIVE_EXTENSION = zip
 
+MKDIR = mkdir build
 ifeq ($(shell echo "Windows"), "Windows")
 	TARGET = $(PROJECT).exe
 	RM = del -Force $(TARGET) .\build\main.o .\build\test_suite.o
 	ZIPPER = tar -a -c -f
 	ZIP_NAME = $(PROJECT)_$(USERNAME).$(ARCHIVE_EXTENSION)
 	Q =
-	MKDIR = New-Item -Path .\ -Name .\build -ItemType Directory -Force
 else
 	TARGET = $(PROJECT)
 	RM = rm -f $(TARGET) ./build/main.o ./build/test_suite.o
@@ -32,7 +32,6 @@ else
 		ARCHIVE_EXTENSION = tar.gz
 	endif
 	ZIP_NAME = $(PROJECT)_$(USERNAME).$(ARCHIVE_EXTENSION)
-	MKDIR = mkdir -p build
 endif
 
 BUILD_DIR := build
