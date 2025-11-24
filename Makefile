@@ -8,7 +8,7 @@ REZ_FILES = README.txt LICENSE
 USERNAME = santiago_sagastegui
 
 CXX = g++
-CXXFLAGS_DEBUG = -g -fsanitize=address -fsanitize=leak -fsanitize=undefined
+CXXFLAGS_DEBUG = -g
 CXXFLAGS_WARN = -Wall -Wextra -Wconversion -Wdouble-promotion \
 				-Wunreachable-code -Wshadow -Wpedantic \
 				-Wno-unused-parameter
@@ -18,14 +18,14 @@ ARCHIVE_EXTENSION = zip
 
 ifeq ($(shell echo "Windows"), "Windows")
 	TARGET = $(PROJECT).exe
-	DEL = del
+	RM = del -Force $(TARGET) .\build\main.o .\build\test_suite.o
 	ZIPPER = tar -a -c -f
 	ZIP_NAME = $(PROJECT)_$(USERNAME).$(ARCHIVE_EXTENSION)
 	Q =
-	MKDIR = New-Item -Name "build" -ItemType "Directory" -Force
+	MKDIR = New-Item -Path .\ -Name .\build -ItemType Directory -Force
 else
 	TARGET = $(PROJECT)
-	DEL = rm -f
+	RM = rm -f $(TARGET) ./build/main.o ./build/test_suite.o
 	ZIPPER = tar -acf
 	Q= "
 	ifeq ($(shell tar --version | grep -o "GNU tar"), GNU tar)
@@ -51,7 +51,8 @@ $(BUILD_DIR):
 	$(MKDIR)
 
 clean:
-	$(DEL) $(TARGET) $(OBJECTS)
+	$(RM)
+#	$(DEL) $(TARGET) $(OBJECTS)
 
 depend:
 	@sed -i.bak '/^# DEPENDENCIES/,$$d' Makefile
@@ -65,7 +66,7 @@ submission:
 	@echo "...Zipping header files:   $(H_FILES) ..."
 	@echo "...Zipping resource files: $(REZ_FILES)..."
 	@echo "...Zipping Makefile..."
-	$(ZIPPER) $(ZIP_NAME) $(SRC_FILES) $(H_FILES) $(REZ_FILES) Makefile
+	$(ZIPPER) $(ZIP_NAME) $(SRC_FILES) $(H_FILES) $(REZ_FILES) build Makefile
 	@echo "...$(ZIP_NAME) done!"
 
 .PHONY: all clean depend submission
